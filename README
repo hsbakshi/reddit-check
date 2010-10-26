@@ -1,0 +1,15 @@
+
+    Reddit-check
+
+ Reddit-check is a Google Chrome / Chromium extension.
+ This extension lets you check whether the current URL you are on has been 
+ submitted to reddit. You can jump right into the discussion if the the link 
+ has already been submitted. Otherwise a 'Submit this link' option is provided 
+ to go to reddit link submission page.
+
+ It is distributed under the GNU General Public License - see the 
+ accompanying LICENSE file for more details.
+ 
+ Contact: bakshi.hrishikesh@gmail.com
+ 
+ Extension install link: https://chrome.google.com/extensions/detail/mllceaiaedaingchlgolnfiibippgkmj/
