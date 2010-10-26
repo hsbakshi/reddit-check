@@ -13,22 +13,29 @@ body {
 
 li {
     list-style-type:none;
-    padding:5px;
+    padding: 5px 0px 5px 0px;
+    width: 400px;
 }
 
 #data {
-    max-width: 600px;
+    width: 430px;
+}
+
+.age {
+    font-size: 9px;
+    color: #909090;
+    height: 12px;
+    padding-left: 10px;
 }
 
 .score {
     height:14px;
-    width: 45px;
-    padding: 0px;
+    /*width: 45px;*/
+    padding: 0px 7px 0px 0px;
     text-align: center;
     display: block;
     float: left;
     color: #FF8B60;
-    font-size: 11px;
 }
 </style>
 <script src="jquery.min.js" language="javascript">
@@ -45,6 +52,10 @@ var resubmitUrl = "http://www.reddit.com/submit?resubmit=true&url=" + url;
 var submitCount = 0;
 var info;
 var permalinks = [];
+var date_now = new Date().getTime(); 
+var date_entry; 
+var one_day = 86400000; // milliseconds
+
 // get URL info
 function getURLInfo(url)
 {
@@ -63,21 +74,15 @@ function parseURLData(jsonData)
     var data = [ 0, "", "", "", "", "", "", "", "", url];
 
     for( var i=0; entry = jsonData.data.children[i]; i++) {
-          /*data[0] = new Date().getTime();
-            data[1] = entry.data.score + "";
-            data[2] = entry.data.title;
-            data[3] = entry.data.permalink;
-            data[4] = entry.data.domain;
-            data[5] = entry.data.created_utc;
-            data[6] = entry.data.author;
-            data[7] = entry.data.subreddit;
-            data[8] = entry.data.num_comments + "";
-            data[9] = entry.data.url;*/
             submitCount +=1;
+            date_entry = new Date(entry.data.created_utc*1000).getTime();
             permalinks[i] = {
                 link: entry.data.permalink,
                 title: entry.data.title,
-                score: entry.data.score+""
+                score: entry.data.score+"",
+                age: Math.ceil((date_now-date_entry)/one_day),
+                comments: entry.data.num_comments+"",
+                subreddit: entry.data.subreddit,
             };
     }
     
@@ -102,12 +107,18 @@ function showLinks() {
     $.each(
         permalinks,
         function(index, permalink) {
-            $("#links").append("<li>"+ 
+            $("#links").append(
+                "<li>"+ 
                 "<div class='score'>"+permalink.score+"</div>"+
                 " <a href='http:\\\\www.reddit.com" +
                 permalink.link + "' title='"+
                 permalink.link + "' target='_blank' >"+
-                permalink.title + "</a></li>");
+                permalink.title + "</a>"+
+                "<span class='age'>"+permalink.age+ " days ago "+
+                permalink.comments+" comments r/"+permalink.subreddit+
+                "</span>"+
+                "</li>"
+            );
         }
     );
 }
