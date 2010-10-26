@@ -1,0 +1,19 @@
+{
+  "name": "Reddit Check",
+  "version": "0.3",
+  "description": "Check whether current URL is submitted on reddit. Jump right into the discussion if the link is already submitted.",
+  "icons": {
+      "64": "alien64.png",
+      "32": "alien32.png"
+   },
+  "background_page": "background.html",
+  "browser_action": {
+    "default_icon": "alien64.png",
+    "default_title": "Reddited",
+    "default_popup":"popup.html"
+  },
+  "permissions": [
+    "tabs",
+    "http://www.reddit.com/*"
+  ]
+}

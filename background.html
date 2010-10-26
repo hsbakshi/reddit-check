@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<!-- 
+ Copyright (C) 2010  Hrishikesh Bakshi
+ For permissions, check LICENSE file in this folder.
+-->
+<script type="text/javascript">
+var selectedTabId = 0;
+var selectedURL = "";
+var selectedTitle = "";
+
+function updateGlobal(tab) {
+        selectedTabId = tab.id;
+        selectedURL = tab.url;
+        selectedTitle = tab.title;
+}
+
+// update on selection
+chrome.tabs.getSelected(null, updateGlobal);
+
+// update on URL update
+chrome.tabs.onUpdated.addListener(function(tabId, change, tab) {
+        updateGlobal(tab);
+});
+
+// update on selection change
+chrome.tabs.onSelectionChanged.addListener(function(tabId, info) {
+        chrome.tabs.get(tabId, updateGlobal);
+});
+
+
+</script>
+

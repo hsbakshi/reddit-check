@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<!-- 
+ Copyright (C) 2010  Hrishikesh Bakshi
+ For permissions, check LICENSE file in this folder.
+-->
+<head>
+<style>
+body {
+  min-width:400px;
+  overflow-x:hidden;
+}
+
+li {
+    list-style-type:none;
+    padding:5px;
+}
+
+#data {
+    max-width: 600px;
+}
+
+.score {
+    height:14px;
+    width: 45px;
+    padding: 0px;
+    text-align: center;
+    display: block;
+    float: left;
+    color: #FF8B60;
+    font-size: 11px;
+}
+</style>
+<script src="jquery.min.js" language="javascript">
+</script>
+<script>
+
+//var tabId = chrome.extension.getBackgroundPage().selectedTabId;
+var     url = chrome.extension.getBackgroundPage().selectedURL;
+var   title = chrome.extension.getBackgroundPage().selectedTitle;
+
+url = encodeURIComponent(url);
+var submitUrl = "http://www.reddit.com/submit?url=" + url;
+var resubmitUrl = "http://www.reddit.com/submit?resubmit=true&url=" + url;
+var submitCount = 0;
+var info;
+var permalinks = [];
+// get URL info
+function getURLInfo(url)
+{
+    var redditUrl = "http://www.reddit.com/api/info.json?url=" +url;
+    $.getJSON(
+        redditUrl,
+        parseURLData
+    );
+}
+
+// parse json data
+function parseURLData(jsonData)
+{
+    submitCount=0;
+    $("div#timeout").hide(0);
+    var data = [ 0, "", "", "", "", "", "", "", "", url];
+
+    for( var i=0; entry = jsonData.data.children[i]; i++) {
+          /*data[0] = new Date().getTime();
+            data[1] = entry.data.score + "";
+            data[2] = entry.data.title;
+            data[3] = entry.data.permalink;
+            data[4] = entry.data.domain;
+            data[5] = entry.data.created_utc;
+            data[6] = entry.data.author;
+            data[7] = entry.data.subreddit;
+            data[8] = entry.data.num_comments + "";
+            data[9] = entry.data.url;*/
+            submitCount +=1;
+            permalinks[i] = {
+                link: entry.data.permalink,
+                title: entry.data.title,
+                score: entry.data.score+""
+            };
+    }
+    
+    $("#data").append("<h4>"+title+"</h4>");
+    if(submitCount) {
+        $("#data").append("<p style='color:red;'>Submitted "+
+            submitCount + " times.</p><p><a title='Post to reddit'"+
+            " target='_blank' href='" + resubmitUrl + 
+            "'>Submit this anyway.</a></p>");
+    }
+    else {
+        $("#data").append("<p style='color:green;'>Not Submitted Yet!</p><p>"+
+            "<a target='_blank' title='Post to reddit' href='"+submitUrl+
+            "'>Reddit this!</a></p>");
+    }
+    showLinks();
+}
+
+function showLinks() {
+    if(submitCount)
+        $("#links").append("<h4> Submissions</h4>");
+    $.each(
+        permalinks,
+        function(index, permalink) {
+            $("#links").append("<li>"+ 
+                "<div class='score'>"+permalink.score+"</div>"+
+                " <a href='http:\\\\www.reddit.com" +
+                permalink.link + "' title='"+
+                permalink.link + "' target='_blank' >"+
+                permalink.title + "</a></li>");
+        }
+    );
+}
+//url="http://news.ycombinator.com";
+
+</script>
+</head>
+<body>
+    <div id="data">
+    </div>
+    <div id="links">
+    </div>
+    <div id="timeout">
+        Loading... please wait.
+    </div>
+    <script type="text/javascript">
+    getURLInfo(url);
+    </script>
+</body>
+</html>
