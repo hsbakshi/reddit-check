@@ -1,19 +1,19 @@
 {
-  "name": "Reddit Check",
-  "version": "0.3",
-  "description": "Check whether current URL is submitted on reddit. Jump right into the discussion if the link is already submitted.",
-  "icons": {
-      "64": "alien64.png",
-      "32": "alien32.png"
+   "background_page": "background.html",
+   "browser_action": {
+      "default_icon": "images/alien48.png",
+      "default_popup": "popup.html",
+      "default_title": "Reddited"
    },
-  "background_page": "background.html",
-  "browser_action": {
-    "default_icon": "alien64.png",
-    "default_title": "Reddited",
-    "default_popup":"popup.html"
-  },
-  "permissions": [
-    "tabs",
-    "http://www.reddit.com/*"
-  ]
+   "description": "Check if current URL is submitted on reddit. Submit link or join the discussion.",
+   "icons": {
+      "32": "images/alien32.png",
+      "48": "images/alien48.png",
+      "64": "images/alien64.png",
+      "128": "images/alien128.png"
+   },
+   "name": "Reddit Check",
+   "permissions": [ "tabs", "http://www.reddit.com/*" ],
+   "update_url": "http://clients2.google.com/service/update2/crx",
+   "version": "0.4"
 }

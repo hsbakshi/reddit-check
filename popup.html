@@ -1,43 +1,90 @@
 <!doctype html>
 <html>
-<!-- 
- Copyright (C) 2010  Hrishikesh Bakshi
- For permissions, check LICENSE file in this folder.
--->
 <head>
 <style>
 body {
   min-width:400px;
   overflow-x:hidden;
+  font-family: 'Shanti', arial, serif;
+  font-size: 16px;
 }
 
 li {
     list-style-type:none;
-    padding: 5px 0px 5px 0px;
+    padding: 5px 5px 5px 5px;
+    margin: 5px 0px 5px 0px;
     width: 400px;
+    
+    background-color: #E1E3ED;  /* chromy */
+    border-style: solid;
+    border-color: #0C3AF1;  /* blue */
+    border-width: 1px;
+    border-radius: 5px;
+}
+li a {
+    text-decoration: none;
+    display: block;
+    padding: 5px 5px;
 }
 
 #data {
     width: 430px;
 }
 
+#close {
+    width: 16px;
+    height: 16px;
+    float: right;
+    margin-right: 10px;
+}
+
 .age {
-    font-size: 9px;
+    font-size: 10px;
     color: #909090;
     height: 12px;
     padding-left: 10px;
 }
 
 .score {
-    height:14px;
-    /*width: 45px;*/
+    height:18px;
+    font-weight: 450;
     padding: 0px 7px 0px 0px;
     text-align: center;
     display: block;
     float: left;
-    color: #FF8B60;
+    color: #FF8000;
+}
+
+.arrow {
+ margin:2px 0px 0px 0px;
+ width:100%;
+ height:14px;
+ display:block;
+ cursor:pointer;
+ background-position:center center;
+ background-repeat:no-repeat; 
+ width:15px;
+ margin-left:auto;
+ margin-right:auto; 
+}
+.arrow.upmod { 
+ background-image:url(images/sprite.png?v=1);
+ background-position:-4px -227px;
+}
+.arrow.downmod { 
+ background-image:url(images/sprite.png?v=1);
+ background-position:-4px -249px;
+}
+.arrow.up { 
+ background-image:url(images/sprite.png?v=1);
+ background-position:-4px -271px;
+}
+.arrow.down { 
+ background-image:url(images/sprite.png?v=1);
+ background-position:-4px -293px;
 }
 </style>
+<link href='http://fonts.googleapis.com/css?family=Shanti' rel='stylesheet' type='text/css'>
 <script src="jquery.min.js" language="javascript">
 </script>
 <script>
@@ -45,36 +92,27 @@ li {
 //var tabId = chrome.extension.getBackgroundPage().selectedTabId;
 var     url = chrome.extension.getBackgroundPage().selectedURL;
 var   title = chrome.extension.getBackgroundPage().selectedTitle;
+var redditPosts = chrome.extension.getBackgroundPage().redditPosts;
 
 url = encodeURIComponent(url);
 var submitUrl = "http://www.reddit.com/submit?url=" + url;
 var resubmitUrl = "http://www.reddit.com/submit?resubmit=true&url=" + url;
-var submitCount = 0;
 var info;
 var permalinks = [];
 var date_now = new Date().getTime(); 
 var date_entry; 
-var one_day = 86400000; // milliseconds
-
-// get URL info
-function getURLInfo(url)
-{
-    var redditUrl = "http://www.reddit.com/api/info.json?url=" +url;
-    $.getJSON(
-        redditUrl,
-        parseURLData
-    );
-}
+var one_day = 86400000; // milliseconds per day
 
 // parse json data
-function parseURLData(jsonData)
-{
-    submitCount=0;
+function parsePosts() {
     $("div#timeout").hide(0);
-    var data = [ 0, "", "", "", "", "", "", "", "", url];
-
-    for( var i=0; entry = jsonData.data.children[i]; i++) {
-            submitCount +=1;
+    if (redditPosts.length === 0) {
+        chrome.tabs.create({
+                url: submitUrl
+        });
+        window.close();
+    }
+    for( var i=0; entry = redditPosts[i]; i++) {
             date_entry = new Date(entry.data.created_utc*1000).getTime();
             permalinks[i] = {
                 link: entry.data.permalink,
@@ -85,49 +123,58 @@ function parseURLData(jsonData)
                 subreddit: entry.data.subreddit,
             };
     }
-    
-    $("#data").append("<h4>"+title+"</h4>");
-    if(submitCount) {
-        $("#data").append("<p style='color:red;'>Submitted "+
-            submitCount + " times.</p><p><a title='Post to reddit'"+
-            " target='_blank' href='" + resubmitUrl + 
-            "'>Submit this anyway.</a></p>");
-    }
-    else {
-        $("#data").append("<p style='color:green;'>Not Submitted Yet!</p><p>"+
-            "<a target='_blank' title='Post to reddit' href='"+submitUrl+
-            "'>Reddit this!</a></p>");
-    }
-    showLinks();
 }
 
-function showLinks() {
-    if(submitCount)
-        $("#links").append("<h4> Submissions</h4>");
-    $.each(
-        permalinks,
-        function(index, permalink) {
-            $("#links").append(
-                "<li>"+ 
-                "<div class='score'>"+permalink.score+"</div>"+
-                " <a href='http:\\\\www.reddit.com" +
-                permalink.link + "' title='"+
-                permalink.link + "' target='_blank' >"+
-                permalink.title + "</a>"+
-                "<span class='age'>"+permalink.age+ " days ago "+
-                permalink.comments+" comments r/"+permalink.subreddit+
-                "</span>"+
-                "</li>"
-            );
-        }
-    );
+function showPosts() {
+    var maxTitleLength = 30;
+    if (title.length > maxTitleLength)
+        title = title.substring (0, maxTitleLength) + "...";
+    $("#data").append("<span id='title'>"+title+"</span>&nbsp;&nbsp;&nbsp;");
+    
+    $("#data").append("<span><a title='Post to reddit'"+
+        " target='_blank' href='" + resubmitUrl + 
+        "'>Repost</a></span>");
+    
+    //var arrowUp = "<div class=\"arrow up\" onclick=\"$(this).vote('" + modhash +
+    //
+    "', null, event)\"></div>"
+    $.each(permalinks, function(index, permalink) {
+        $("#links").append(
+            "<li>"+ 
+            "<div class='score'>"+permalink.score+"</div>"+
+            " <a href='http://www.reddit.com" + permalink.link + 
+              "' title='" + permalink.link + "' target='_blank' >"+
+              permalink.title + "</a>"+
+            "<div class='age'>" + getAge(permalink.age)+ 
+             " ,&nbsp;&nbsp;" + permalink.comments + " comments,"+
+             "&nbsp;&nbsp;r/" + permalink.subreddit +
+            "</div>"+
+            "</li>"
+        );
+    });
 }
+
+function getAge (days) {
+    var age;
+    if (days == 0)
+        age = "today";
+    else if (days == 1)
+        age = "yesterday"
+    else
+        age = days + " days ago";
+    return age;
+}
+       
 //url="http://news.ycombinator.com";
 
 </script>
 </head>
 <body>
     <div id="data">
+        <div id='close'>
+            <a href="#" onClick="window.close()"><img src="images/close.png"/>
+            </a>
+        </div>
     </div>
     <div id="links">
     </div>
@@ -135,7 +182,8 @@ function showLinks() {
         Loading... please wait.
     </div>
     <script type="text/javascript">
-    getURLInfo(url);
+        parsePosts();
+        showPosts();
     </script>
 </body>
 </html>
