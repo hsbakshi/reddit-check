@@ -19,5 +19,5 @@
     "name": "Reddit Check",
     "permissions": [ "tabs", "http://www.reddit.com/*", "storage"],
     "update_url": "http://clients2.google.com/service/update2/crx",
-    "version": "0.4"
+    "version": "0.5"
 }
