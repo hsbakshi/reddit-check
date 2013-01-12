@@ -9,7 +9,9 @@ function parsePosts(globalPage) {
     var resubmitUrl = "http://www.reddit.com/submit?resubmit=true&url=" + url;
     var info;
     var permalinks = [];
-    var date_now = new Date().getTime(); 
+    var now = new Date();
+    var date_now = new Date(now.getUTCFullYear(), now.getUTCMonth(), 
+        now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()); 
     var date_entry; 
     var one_day = 86400000; // milliseconds per day
 
@@ -26,7 +28,7 @@ function parsePosts(globalPage) {
                 link: entry.data.permalink,
                 title: entry.data.title,
                 score: entry.data.score+"",
-                age: Math.ceil((date_now-date_entry)/one_day),
+                age: (date_now-date_entry)/one_day,
                 comments: entry.data.num_comments+"",
                 subreddit: entry.data.subreddit,
             };
@@ -62,13 +64,7 @@ function parsePosts(globalPage) {
 }
 
 function getAge (days) {
-    var age;
-    if (days == 0)
-        age = "today";
-    else if (days == 1)
-        age = "yesterday"
-    else
-        age = days + " days ago";
+    var age = days.toFixed(1) + " days ago";
     return age;
 }
        
