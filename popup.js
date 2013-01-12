@@ -58,6 +58,7 @@ function parsePosts(globalPage) {
             "</li>"
         );
     });
+
 }
 
 function getAge (days) {
@@ -71,9 +72,13 @@ function getAge (days) {
     return age;
 }
        
-//document.addEventListener('DOMContentLoaded',function () {
-chrome.runtime.getBackgroundPage(function (global){parsePosts(global);
+document.addEventListener('DOMContentLoaded',function () {
+    $("#close").click(function() {
+      window.close();
+    });
 });
+
+chrome.runtime.getBackgroundPage(function (global){parsePosts(global)});
    // showPosts();
 //});
 //url="http://news.ycombinator.com";
