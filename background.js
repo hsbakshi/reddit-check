@@ -1,7 +1,7 @@
 var selectedTabId = 0;
 var selectedURL = "";
 var selectedTitle = "";
-var redditPosts;
+var redditPosts = new Array();
 var modHash;
 
 function updateGlobal(tab) {
@@ -28,12 +28,38 @@ chrome.tabs.onSelectionChanged.addListener(function(tabId, info) {
         });
 });
 
+function getYoutubeUnique(url){
+    var gotVidId = false;
+    var video_id = '';
+    var urls = new Array();
+    if (url.indexOf('//www.youtube.com') != -1) {
+        if (url.indexOf('v=') != -1) {
+            var video_id = url.split('v=')[1];
+            var ampersandPosition = video_id.indexOf('&');
+            if(ampersandPosition != -1) {
+                  video_id = video_id.substring(0, ampersandPosition);
+                  gotVidId = true;
+            }
+        }
+    }
+    urls.push(url);
+    if (gotVidId) {
+        urls.push('http://www.youtube.com/watch?v='+video_id);
+        urls.push('https://www.youtube.com/watch?v='+video_id);
+    }
+    return urls;
+}
 
 // get URL info json
 function getURLInfo(url){
-    url = encodeURIComponent(url);
-    var redditUrl = 'http://www.reddit.com/api/info.json?url=' + url;
-    $.getJSON(redditUrl, updateBadge);
+    redditPosts = new Array();
+    var urls = getYoutubeUnique(url);
+    for (var i = 0; i < urls.length; ++i) {
+        url = encodeURIComponent(urls[i]);
+        var redditUrl = 'http://www.reddit.com/api/info.json?url=' + url;
+        $.getJSON(redditUrl, updateBadge);
+    }
+    
 }
 
 
@@ -44,7 +70,7 @@ function updateBadge(jsonData){
     var title = "Repost";
     var badgeColor = green;
     var alienIcon = "images/alien32.png";
-    redditPosts = jsonData.data.children;
+    redditPosts = redditPosts.concat(jsonData.data.children);
     modHash = jsonData.data.modhash;
     if (redditPosts.length == 0) {
         badgeColor = orangeRed;
