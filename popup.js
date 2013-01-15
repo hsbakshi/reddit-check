@@ -3,7 +3,7 @@ function parsePosts(globalPage) {
     //var tabId = chrome.extension.getBackgroundPage().selectedTabId;
     var url=globalPage.selectedURL;
     var title=globalPage.selectedTitle;
-    var redditPosts = globalPage.redditPosts;
+    var redditPosts = globalPage.gRedditPosts;
     url = encodeURIComponent(url);
     var submitUrl = "http://www.reddit.com/submit?url=" + url;
     var resubmitUrl = "http://www.reddit.com/submit?resubmit=true&url=" + url;
