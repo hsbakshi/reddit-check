@@ -1,6 +1,5 @@
 // parse json data
 function parsePosts(globalPage) {
-    //var tabId = chrome.extension.getBackgroundPage().selectedTabId;
     var url=globalPage.selectedURL;
     var title=globalPage.selectedTitle;
     var redditPosts = globalPage.gRedditPosts;
@@ -44,8 +43,6 @@ function parsePosts(globalPage) {
         " target='_blank' href='" + resubmitUrl + 
         "'>Repost</a></span>");
     
-    //var arrowUp = "<div class=\"arrow up\" onclick=\"$(this).vote('" + modhash +
-    // "', null, event)\"></div>"
     $.each(permalinks, function(index, permalink) {
         $("#links").append(
             "<li>"+ 
@@ -60,7 +57,6 @@ function parsePosts(globalPage) {
             "</li>"
         );
     });
-
 }
 
 function getAge (days) {
@@ -74,9 +70,7 @@ document.addEventListener('DOMContentLoaded',function () {
     });
 });
 
-chrome.runtime.getBackgroundPage(function (global){parsePosts(global)});
-   // showPosts();
-//});
-//url="http://news.ycombinator.com";
-
+chrome.runtime.getBackgroundPage(function (global) {
+    parsePosts(global)
+});
 

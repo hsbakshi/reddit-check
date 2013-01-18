@@ -1,0 +1,60 @@
+<html>
+<head>
+<style>
+body {
+  min-width:400px;
+  overflow-x:hidden;
+  font-family: 'Shanti', arial, serif;
+  font-size: 16px;
+}
+#loading {
+    padding-left: 20px;
+}
+#title {
+    font-weight: 700;
+    font-size: large;
+    border-bottom: 1px solid #e0e0dc;
+}
+#main {
+    width: 600px;
+    margin: 0px auto;
+}
+#desc {
+    margin-top: 20px;
+}
+#blacklist {
+    margin: 20px;
+}
+#inputarea {
+    margin: 20px;
+}
+#emptynotice {
+    margin: 20px;
+    display: none;
+}
+</style>
+<script src="jquery.min.js"></script>
+<title>Reddit Check Options</title></head>
+<body>
+<div id="main">
+    <div id="title"> Website Blacklist </div>
+    <div id="inputarea">
+        <form action="" id="blockform">
+            <label for="blockurl">Add to BlackList: </label>
+            <input id="blockurl" type="text"> 
+            <input type="submit" value="Add"><br/>
+            (Example: 'google' will block google.com, mail.google.com etc.)
+        </form>
+    </div>
+
+    <div id="desc">
+        Reddit check will not run on web addresses containing:
+    </div>
+    <div id="blacklistdiv"><ol id="blacklist"></ol> </div>
+    <div id="emptynotice">Your blacklist is empty.</div>
+    <div id="loading">
+        Loading your black list.
+    </div>
+</div>
+<script src="options.js"></script>
+</html>
