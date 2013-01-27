@@ -16,8 +16,9 @@ $('body').on('click', 'a.dellink', function() {
     var id=$(this).attr('id')
     var numId=id.split('_')[1]
     numId = +numId
+    var url = gBlacklist[numId]
     gBlacklist.splice(numId, 1)
-    saveBlacklist(gBlacklist)
+    saveBlacklist(gBlacklist, "Removed '"+url+"' from blacklist.")
     return false
 });
 
@@ -48,13 +49,14 @@ $('#blockform').submit(function() {
     var url = $('input#blockurl').val();
     console.log(url);
     if (url.length > 0) {
+        $('input#blockurl').val('');
         chrome.storage.sync.get('blacklist', function (storageMap) {
             var blacklist = [];
             if (storageMap.hasOwnProperty('blacklist') ){
                 blacklist = storageMap['blacklist'];
             }
             blacklist.push(url);
-            saveBlacklist(blacklist, 'Blacklist saved.');
+            saveBlacklist(blacklist, 'Added \''+url+'\' to blacklist.');
         });
     } else {
         alert('Empty URL.')
