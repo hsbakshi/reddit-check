@@ -14,6 +14,7 @@ body {
     font-weight: 700;
     font-size: large;
     border-bottom: 1px solid #e0e0dc;
+    color: #344152;
 }
 #main {
     width: 600px;
@@ -32,19 +33,44 @@ body {
     margin: 20px;
     display: none;
 }
+
+#blacklistdiv {
+    color: #CC1100;
+}
+
+#statusarea {
+    background-color: rgb(227,227,227);
+    color: green;
+    padding: 4px;
+}
+
+.blockurl {
+    display: block;
+    height: 20px;
+    line-height: 20px;
+    margin: 2px;
+    padding: 2px;
+    width: 500px;
+    background-color: rgb(227,227,227);
+}
+.delete {
+    float: right;
+}
 </style>
 <script src="jquery.min.js"></script>
 <title>Reddit Check Options</title></head>
 <body>
 <div id="main">
-    <div id="title"> Website Blacklist </div>
+    <div id="title"> Reddit-Check Website Blacklist </div>
     <div id="inputarea">
         <form action="" id="blockform">
-            <label for="blockurl">Add to BlackList: </label>
             <input id="blockurl" type="text"> 
-            <input type="submit" value="Add"><br/>
-            (Example: 'google' will block google.com, mail.google.com etc.)
+            <input type="button" value="Add to Blocklist" id="addbutton">
+        <input type="button" value="Clear blocklist" id="clear"><br/>
         </form>
+    </div>
+    <div id="statusarea">
+            Tip: 'google' will block google.com, mail.google.com etc.<br/>
     </div>
 
     <div id="desc">

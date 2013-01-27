@@ -14,18 +14,46 @@ chrome.tabs.getSelected(null, updateGlobal);
 // update on URL update
 chrome.tabs.onUpdated.addListener(function(tabId, change, tab) {
     if(tab.id === selectedTabId){
-            updateGlobal(tab);
-            getURLInfo(selectedURL);
+        changeAction(tab)
     }
 });
 
 // update on selection change
 chrome.tabs.onSelectionChanged.addListener(function(tabId, info) {
-        chrome.tabs.getSelected(null, function(tab){
-                    updateGlobal(tab);
-                    getURLInfo(selectedURL);
-        });
+    chrome.tabs.getSelected(null, function(tab){
+        changeAction(tab)
+    });
 });
+
+function changeAction(tab) {
+    updateGlobal(tab)
+    isBlacklisted(tab, disableBadge, getURLInfo)
+}
+
+function isBlacklisted(tab, actionOnTrue, actionOnElse) {
+    var url = tab.url
+    console.log('in isBlacklisted')
+    chrome.storage.sync.get('blacklist', function (storageMap) {
+        var isBlocked = false
+        if (storageMap.hasOwnProperty('blacklist')){
+            var list = storageMap['blacklist']
+            console.log(list)
+            for (var i=0; i<list.length; ++i) {
+                if (url.indexOf(list[i]) > -1) {
+                    isBlocked = true
+                    break
+                }
+                console.log('blockurl:'+list[i]+' url:'+url)
+            }
+        } 
+        console.log('in isBlacklisted:'+isBlocked)
+        if (isBlocked) {
+            actionOnTrue(tab)
+        } else {
+            actionOnElse(tab)
+        }
+    });
+}
 
 function getYoutubeURLs(url){
     var gotVidId = false;
@@ -66,7 +94,9 @@ function constructURLs(url){
 
 
 // get URL info json
-function getURLInfo(url){
+function getURLInfo(tab){
+    var url = tab.url
+    console.log('in getURLInfo')
     var redditPosts = []
     var urls = constructURLs(url);
     for (var i = 0; i < urls.length; ++i) {
@@ -75,43 +105,52 @@ function getURLInfo(url){
         var redditUrl = 'http://www.reddit.com/api/info.json?url=' + url;
         $.getJSON(redditUrl, function(jsonData) {
             redditPosts = redditPosts.concat(jsonData.data.children)
-            updateBadge(redditPosts.length);
+            updateBadge(redditPosts.length, tab);
             console.log(redditPosts);
             gRedditPosts = redditPosts
         });
     }
 }
 
+function disableBadge(tab){
+    var title = "Blacklisted by you"
+    var text = "-"
+    var badgeColor = [250, 0, 0, 200] //red
+    var alienIcon = "images/alien_apathy32.png"
+    setBadge(title, text, badgeColor, alienIcon, tab)
+}
 
-function updateBadge(numPosts){
-    var orangeRed = [255, 69, 0, 55];
-    var green = [1, 220, 1, 255];
+function updateBadge(numPosts, tab){
+    var orangeRed = [255, 69, 0, 55]
+    var green = [1, 220, 1, 255]
 
-    var title = "Repost";
-    var badgeColor = green;
-    var alienIcon = "images/alien32.png";
+    var title = "Repost"
+    var text = numPosts.toString()
+    var badgeColor = green
+    var alienIcon = "images/alien32.png"
     if (numPosts == 0) {
-        badgeColor = orangeRed;
-        title = "Post link";
-        alienIcon = "images/alien_apathy32.png";
+        badgeColor = orangeRed
+        title = "Post link"
+        alienIcon = "images/alien_apathy32.png"
     }
-        
-    chrome.browserAction.setTitle({"title": title, "tabId": selectedTabId});
+    setBadge(title, text, badgeColor, alienIcon, tab)
+}
 
+function setBadge(title, text, badgeColor, alienIcon, tab) {
+    var tabId = tab.id
+    chrome.browserAction.setTitle({"title": title, "tabId": tabId})
     chrome.browserAction.setBadgeBackgroundColor({
         "color": badgeColor, 
-        "tabId": selectedTabId
-    });
-    
+        "tabId": tabId
+    })
     chrome.browserAction.setBadgeText({
-        "text": numPosts.toString(), 
-        "tabId": selectedTabId
-    });
-    
+        "text": text,
+        "tabId": tabId
+    })
     chrome.browserAction.setIcon({
         "path": alienIcon,
-        "tabId": selectedTabId
-    });
+        "tabId": tabId
+    })
 }
 
 
