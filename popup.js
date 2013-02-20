@@ -1,7 +1,7 @@
 // parse json data
-function parsePosts(globalPage) {
-    var url=globalPage.selectedURL;
-    var title=globalPage.selectedTitle;
+function parsePosts(globalPage, tab) {
+    var url = tab.url
+    var title = tab.title
     var redditPosts = globalPage.gRedditPosts;
     url = encodeURIComponent(url);
     var submitUrl = "http://www.reddit.com/submit?url=" + url;
@@ -71,6 +71,8 @@ document.addEventListener('DOMContentLoaded',function () {
 });
 
 chrome.runtime.getBackgroundPage(function (global) {
-    parsePosts(global)
+    chrome.tabs.getSelected(null, function(tab){
+        parsePosts(global, tab)
+    });
 });
 

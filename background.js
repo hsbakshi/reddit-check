@@ -1,21 +1,8 @@
-var selectedTabId = 0;
-var selectedURL = "";
-var selectedTitle = "";
 var gRedditPosts = null
-
-function updateGlobal(tab) {
-        selectedTabId = tab.id;
-        selectedURL = tab.url;
-        selectedTitle = tab.title;
-}
-// update on selection
-chrome.tabs.getSelected(null, updateGlobal);
 
 // update on URL update
 chrome.tabs.onUpdated.addListener(function(tabId, change, tab) {
-    if(tab.id === selectedTabId){
-        changeAction(tab)
-    }
+    changeAction(tab)
 });
 
 // update on selection change
@@ -26,7 +13,6 @@ chrome.tabs.onSelectionChanged.addListener(function(tabId, info) {
 });
 
 function changeAction(tab) {
-    updateGlobal(tab)
     isBlacklisted(tab, disableBadge, getURLInfo)
 }
 
