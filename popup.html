@@ -5,26 +5,63 @@
 body {
   min-width:400px;
   overflow-x:hidden;
-  font-family: 'Shanti', arial, serif;
-  font-size: 16px;
+  font-family: verdana, arial, serif;
+}
+
+#links{
+    margin-top: 20px;
+}
+
+#title{
+    font-size: 15px;
+}
+
+#data span{
+    float: left;
+}
+
+#data span a{
+    text-decoration: none;
+    border-radius: 3px;
+    display: block;
+    background: linear-gradient(to bottom, #999999, #bbbbbb);
+    color: white;
+    width: 80px;
+    height: 20px;
+    font-size: 12px;
+    text-align: center;
+    margin-left: 20px;
+    padding-top: 5px;
+    font-weight: bold;
+}
+
+#data span a:hover{
+    background: linear-gradient(to bottom, #6699FF, #66CCFF);
+    -webkit-transition: background 2s;
 }
 
 li {
     list-style-type:none;
-    padding: 5px 5px 5px 5px;
-    margin: 5px 0px 5px 0px;
-    width: 400px;
+    padding: 10px 5px 10px 10px;
+    margin-left: -11px;
+    width: 102%;
     
-    background-color: #E1E3ED;  /* chromy */
-    border-style: solid;
-    border-color: #0C3AF1;  /* blue */
-    border-width: 1px;
-    border-radius: 5px;
+    background: #eeeeee;  /* chromy */
+    border-bottom: 1px solid #bbbbbb;  /* blue */
+    border-top: 1px solid #ffffff;
 }
+
+li:hover{
+    background-color: #cccccc;
+}
+
 li a {
     text-decoration: none;
     display: block;
     padding: 5px 5px;
+    color: #444444;
+    font-size: 13px;
+    font-weight: bold;
 }
 
 #data {
@@ -46,13 +83,19 @@ li a {
 }
 
 .score {
-    height:18px;
-    font-weight: 450;
-    padding: 0px 7px 0px 0px;
+    height:20px;
+    min-width: 25px; 
+    font-size: 14px;
     text-align: center;
     display: block;
     float: left;
-    color: #FF8000;
+    background: linear-gradient(to bottom, white, #eeeeee);
+    /*color: #FF8000;*/
+    color: #FF3333;
+    margin: 5px 5px 0px 0px;
+    box-shadow: 1px 1px 2px #888888;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
 }
 
 .arrow {
