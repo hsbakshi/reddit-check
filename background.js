@@ -102,7 +102,7 @@ function disableBadge(tab){
     var title = "Blacklisted by you"
     var text = "-"
     var badgeColor = [250, 0, 0, 200] //red
-    var alienIcon = "images/alien_apathy32.png"
+    var alienIcon = { '19': "images/alien_apathy19.png", '38': "images/alien_apathy38.png" }
     setBadge(title, text, badgeColor, alienIcon, tab)
 }
 
@@ -113,11 +113,11 @@ function updateBadge(numPosts, tab){
     var title = "Repost"
     var text = numPosts.toString()
     var badgeColor = green
-    var alienIcon = "images/alien32.png"
+    var alienIcon = { '19': "images/alien19.png", '38': "images/alien38.png" }
     if (numPosts == 0) {
         badgeColor = orangeRed
         title = "Post link"
-        alienIcon = "images/alien_apathy32.png"
+        alienIcon = { '19': "images/alien_apathy19.png", '38': "images/alien_apathy38.png" }
     }
     setBadge(title, text, badgeColor, alienIcon, tab)
 }
