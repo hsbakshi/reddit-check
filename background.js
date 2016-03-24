@@ -38,14 +38,16 @@ function getYoutubeURLs(url){
         }
     }
     if (gotVidId) {
-        var httpUrl = 'http://www.youtube.com/watch?v='+video_id
-        if (httpUrl != url) {
-            urls.push(httpUrl);
-        }
-        var httpsUrl = 'https://www.youtube.com/watch?v='+video_id
-        if (httpsUrl != url) {
-            urls.push(httpsUrl);
-        }
+        var prefixes = [
+            'http://www.youtube.com/watch?v=',
+            'https://www.youtube.com/watch?v=',
+            'http://www.youtu.be/',
+            'https://www.youtu.be/'
+        ];
+        prefixes.forEach(function(prefix) {
+			if (prefix + video_id != url)
+				urls.push(prefix + video_id);
+		});
     }
     return urls;
 }
