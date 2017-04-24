@@ -75,6 +75,9 @@ function constructURLs(url){
     if (url.indexOf('youtube.com') != -1) {
         urls = urls.concat(getYoutubeURLs(url));
     }
+    if (url.startsWith('https')) {
+        urls = urls.concat(url.replace('https', 'http'));
+    }
     return urls;
 }
 
