@@ -6,7 +6,7 @@ function parsePosts(globalPage, tab) {
 
     $("div#timeout").hide(0);
     var redditPosts = lscache.get(globalPage.POST_STORAGE_KEY + tab.url)
-    if (redditPosts != null) {
+    if (redditPosts != null && redditPosts != []) {
         processPosts(redditPosts, encodedUrl, title)
     } else {
         var promises = globalPage.gUrlToAsyncMap[tab.url]
@@ -66,11 +66,11 @@ function makeDisplay(redditPosts, encodedUrl, title) {
         "'>Repost</a></span>");
     
     $.each(permalinks, function(index, permalink) {
+		url = "https://www.reddit.com" + permalink.link
         $("#links").append(
             "<li>"+ 
             "<div class='score'>"+permalink.score+"</div>"+
-            " <a href='http://www.reddit.com" + permalink.link + 
-              "' title='" + permalink.link + "' target='_blank' >"+
+            " <a href='" + url + "' title='" + permalink.link + "' target='_blank' >"+
               permalink.title + "</a>"+
             "<div class='age'>" + getAge(permalink.age)+ 
              " ,&nbsp;&nbsp;" + permalink.comments + " comments,"+
