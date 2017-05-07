@@ -106,21 +106,21 @@ function getPostsForUrl(url) {
 function disableBadge(tab){
     var title = "Blacklisted by you"
     var text = "-"
-    var badgeColor = [250, 0, 0, 200] //red
+    var badgeColor = [175, 0, 0, 200] //red
     var alienIcon = { '19': "images/alien_apathy19.png", '38': "images/alien_apathy38.png" }
     setBadge(title, text, badgeColor, alienIcon, tab)
 }
 
 function updateBadge(numPosts, tab) {
-    var orangeRed = [255, 69, 0, 55]
-    var green = [1, 220, 1, 255]
+    var noPostsColor = [175, 0, 0, 55]
+    var green = [1, 175, 1, 255]
 
     var title = "Repost"
     var text = numPosts.toString()
     var badgeColor = green
     var alienIcon = { '19': "images/alien19.png", '38': "images/alien38.png" }
     if (numPosts == 0) {
-        badgeColor = orangeRed
+        badgeColor = noPostsColor
         title = "Post link"
         alienIcon = { '19': "images/alien_apathy19.png", '38': "images/alien_apathy38.png" }
     }
