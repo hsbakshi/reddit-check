@@ -82,7 +82,7 @@ function makeDisplay(redditPosts, encodedUrl, title) {
 }
 
 function comparePosts(postA, postB) {
-    return postA.data.score - postB.data.score
+    return postB.data.score - postA.data.score
 }
 
 function getAge (days) {
