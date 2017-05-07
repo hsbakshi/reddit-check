@@ -2,25 +2,47 @@
 function parsePosts(globalPage, tab) {
     var url = tab.url
     var title = tab.title
-    var redditPosts = globalPage.gRedditPosts;
-    url = encodeURIComponent(url);
-    var submitUrl = "http://www.reddit.com/submit?url=" + url;
-    var resubmitUrl = "http://www.reddit.com/submit?resubmit=true&url=" + url;
-    var info;
-    var permalinks = [];
-    var now = new Date();
-    var date_now = new Date(now.getUTCFullYear(), now.getUTCMonth(), 
-        now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()); 
-    var date_entry; 
-    var one_day = 86400000; // milliseconds per day
+    var encodedUrl = encodeURIComponent(url)
 
     $("div#timeout").hide(0);
+    var redditPosts = lscache.get(globalPage.POST_STORAGE_KEY + tab.url)
+    if (redditPosts != null) {
+        processPosts(redditPosts, encodedUrl, title)
+    } else {
+        var promises = globalPage.gUrlToAsyncMap[tab.url]
+        redditPosts = []
+        if (promises != null) {
+            Promise.all(promises).then(values => {
+                console.log("values " + JSON.stringify(values))
+                values.forEach(function(jsonData) { 
+                    redditPosts = redditPosts.concat(jsonData.data.children)
+                });
+                processPosts(redditPosts, encodedUrl, title)
+            });
+        }
+    }
+}
+
+function processPosts(redditPosts, encodedUrl, title) {
+    var submitUrl = "https://www.reddit.com/submit?url=" + encodedUrl
     if (redditPosts.length === 0) {
         chrome.tabs.create({
                 url: submitUrl
         });
         window.close();
     }
+    makeDisplay(redditPosts, encodedUrl, title)
+}
+
+function makeDisplay(redditPosts, encodedUrl, title) {
+    var now = new Date();
+    var date_now = new Date(now.getUTCFullYear(), now.getUTCMonth(), 
+        now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()); 
+    var date_entry; 
+    var one_day = 86400000; // milliseconds per day
+    var resubmitUrl = "https://www.reddit.com/submit?resubmit=true&url=" + encodedUrl;
+    redditPosts.sort(comparePosts)
+    var permalinks = [];
     for( var i=0; entry = redditPosts[i]; i++) {
             date_entry = new Date(entry.data.created_utc*1000).getTime();
             permalinks[i] = {
@@ -59,6 +81,10 @@ function parsePosts(globalPage, tab) {
     });
 }
 
+function comparePosts(postA, postB) {
+    return postA.data.score - postB.data.score
+}
+
 function getAge (days) {
     var age = days.toFixed(1) + " days ago";
     return age;
@@ -72,7 +98,15 @@ document.addEventListener('DOMContentLoaded',function () {
 
 chrome.runtime.getBackgroundPage(function (global) {
     chrome.tabs.getSelected(null, function(tab){
-        parsePosts(global, tab)
+        isBlacklisted(tab,
+            function(input) {
+                $("div#blacklisted").show(0)
+                $("div#timeout").hide(0);
+            },
+            function (input) {
+                $("div#blacklisted").hide(0)
+                parsePosts(global, tab)
+            });
     });
 });
 

@@ -1,44 +1,27 @@
-var gRedditPosts = null
+var gUrlToAsyncMap = {}
+var DEDUPE_KEY = "Dedupe:"
+var POST_STORAGE_KEY = "Posts:"
 
 // update on URL update
 chrome.tabs.onUpdated.addListener(function(tabId, change, tab) {
+    console.log('onUpdated: ' + tabId)
     changeAction(tab)
 });
 
 // update on selection change
 chrome.tabs.onSelectionChanged.addListener(function(tabId, info) {
+    console.log('onSelectionChanged: ' + tabId)
     chrome.tabs.getSelected(null, function(tab){
         changeAction(tab)
     });
 });
 
 function changeAction(tab) {
+    if (lscache.get(DEDUPE_KEY + tab.url + tab.id) != null) {
+        return // dupe
+    }
+    lscache.set(DEDUPE_KEY + tab.url + tab.id, "", 2)
     isBlacklisted(tab, disableBadge, getURLInfo)
-}
-
-function isBlacklisted(tab, actionOnTrue, actionOnElse) {
-    var url = tab.url
-    console.log('in isBlacklisted')
-    chrome.storage.sync.get('blacklist', function (storageMap) {
-        var isBlocked = false
-        if (storageMap.hasOwnProperty('blacklist')){
-            var list = storageMap['blacklist']
-            console.log(list)
-            for (var i=0; i<list.length; ++i) {
-                if (url.indexOf(list[i]) > -1) {
-                    isBlocked = true
-                    break
-                }
-                console.log('blockurl:'+list[i]+' url:'+url)
-            }
-        } 
-        console.log('in isBlacklisted:'+isBlocked)
-        if (isBlocked) {
-            actionOnTrue(tab)
-        } else {
-            actionOnElse(tab)
-        }
-    });
 }
 
 function getYoutubeURLs(url){
@@ -85,20 +68,37 @@ function constructURLs(url){
 // get URL info json
 function getURLInfo(tab){
     var url = tab.url
-    console.log('in getURLInfo')
-    var redditPosts = []
-    var urls = constructURLs(url);
-    for (var i = 0; i < urls.length; ++i) {
-        console.log('url: i',urls[i], i)
-        url = encodeURIComponent(urls[i]);
-        var redditUrl = 'http://www.reddit.com/api/info.json?url=' + url;
-        $.getJSON(redditUrl, function(jsonData) {
-            redditPosts = redditPosts.concat(jsonData.data.children)
-            updateBadge(redditPosts.length, tab);
-            console.log(redditPosts);
-            gRedditPosts = redditPosts
+    var posts = lscache.get(POST_STORAGE_KEY + url)
+    if (posts != null) {
+        console.log('cached.')
+        updateBadge(posts.length, tab);
+        return;
+    } else {
+        console.log('getURLInfo: calling reddit API')
+        gUrlToAsyncMap[url] = getPostsForUrl(url)
+        var redditPosts = []
+        Promise.all(gUrlToAsyncMap[url]).then(values => {
+            values.forEach(function(jsonData) { 
+                redditPosts = redditPosts.concat(jsonData.data.children)
+                updateBadge(redditPosts.length, tab);
+                lscache.set(POST_STORAGE_KEY + url, redditPosts, 5)
+            });
         });
     }
+}
+
+function getPostsForUrl(url) {
+    var redditPosts = []
+    var promises = []
+    var urls = constructURLs(url);
+    console.log("checking " + urls.length)
+    for (var i = 0; i < urls.length; ++i) {
+        let queryUrl = encodeURIComponent(urls[i]);
+        var redditUrl = 'https://www.reddit.com/api/info.json?url=' + queryUrl;
+        var promise = Promise.resolve($.getJSON(redditUrl));
+        promises.push(promise)
+    }
+    return promises
 }
 
 function disableBadge(tab){
@@ -109,7 +109,7 @@ function disableBadge(tab){
     setBadge(title, text, badgeColor, alienIcon, tab)
 }
 
-function updateBadge(numPosts, tab){
+function updateBadge(numPosts, tab) {
     var orangeRed = [255, 69, 0, 55]
     var green = [1, 220, 1, 255]
 
