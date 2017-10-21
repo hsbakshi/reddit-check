@@ -144,4 +144,66 @@ function setBadge(title, text, badgeColor, alienIcon, tab) {
     })
 }
 
+function getSnoowrap(interactive, callback) {
+    'use strict';
+    var clientId = 'JM8JSElud0Rm1g';
+    var redirectUri = chrome.identity.getRedirectURL('provider_cb');
+    var redirectRe = new RegExp(redirectUri + '[#\?](.*)');
+    // TODO: bogus userAgent
+    var userAgent = chrome.runtime.id + ':' + 'v0.0.1' + ' (by /u/sirius_li)'
 
+    var snoowrap_requester = lscache.get('snoowrap_requester_json');
+    // In case we already have a snoowrap requester cached, simply return it.
+    if (snoowrap_requester) {
+        callback(snoowrap_requester);
+        return;
+    }
+
+    var authenticationUrl = snoowrap.getAuthUrl({
+        clientId: clientId,
+        scope: ['identity', 'read', 'submit'],
+        redirectUri: redirectUri,
+        permanent: true,
+        state: 'fe211bebc52eb3da9bef8db6e63104d3' // TODO: bogus state
+    });
+
+    var options = {
+        'interactive': interactive,
+        'url': authenticationUrl
+    }
+    chrome.identity.launchWebAuthFlow(options, function(redirectUri) {
+        if (chrome.runtime.lastError) {
+            new Error(chrome.runtime.lastError);
+        }
+
+        var matches = redirectUri.match(redirectRe);
+        if (matches && matches.length > 1) {
+            var code = new URL(redirectUri).searchParams.get('code');
+            setSnoowrap(code);
+        } else {
+            new Error('Invalid redirect URI');
+        }
+    });
+
+    function setSnoowrap(auth_code) {
+        var snoowrap_promise = snoowrap.fromAuthCode({
+            code: auth_code,
+            userAgent: userAgent,
+            clientId: clientId,
+            redirectUri: redirectUri
+        });
+        snoowrap_promise.then(r => {
+            lscache.set('snoowrap_requester_json', r);
+            callback(JSON.stringify(r));
+        });
+    }
+}
+
+function onRequest(request, sender, callback) {
+    if (request.action == 'getSnoowrap') {
+        getSnoowrap(request.interactive, callback);
+        return true;
+    }
+}
+
+chrome.runtime.onMessage.addListener(onRequest);

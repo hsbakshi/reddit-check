@@ -1,0 +1,146 @@
+body {
+    min-width:400px;
+    overflow-x:hidden;
+    font-family: verdana, arial, serif;
+}
+
+#title{
+    font-size: 15px;
+}
+
+.below-title {
+    margin-top: 20px;
+}
+
+#data span{
+    float: left;
+}
+
+#data span a{
+    text-decoration: none;
+    border-radius: 3px;
+    display: block;
+    background: linear-gradient(to bottom, #999999, #bbbbbb);
+    color: white;
+    width: 80px;
+    height: 20px;
+    font-size: 12px;
+    text-align: center;
+    margin-left: 20px;
+    padding-top: 5px;
+    font-weight: bold;
+}
+
+#data span a:hover{
+    background: linear-gradient(to bottom, #6699FF, #66CCFF);
+    -webkit-transition: background 2s;
+}
+
+li {
+    list-style-type:none;
+    padding: 10px 5px 10px 10px;
+    margin-left: -11px;
+    width: 102%;
+
+    background: #eeeeee;  /* chromy */
+    border-bottom: 1px solid #bbbbbb;  /* blue */
+    border-top: 1px solid #ffffff;
+}
+
+li:hover{
+    background-color: #cccccc;
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #999999;
+}
+
+li a {
+    text-decoration: none;
+    display: block;
+    padding: 5px 5px;
+    color: #444444;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+#data {
+    width: 430px;
+}
+
+#close {
+    width: 16px;
+    height: 16px;
+    float: right;
+    margin-right: 10px;
+}
+
+.age {
+    font-size: 10px;
+    color: #909090;
+    height: 12px;
+    padding-left: 10px;
+}
+
+.score {
+    height:20px;
+    min-width: 25px;
+    font-size: 14px;
+    text-align: center;
+    display: block;
+    float: left;
+    background: linear-gradient(to bottom, white, #eeeeee);
+    /*color: #FF8000;*/
+    color: #FF3333;
+    margin: 5px 5px 0px 0px;
+    box-shadow: 1px 1px 2px #888888;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+}
+
+.arrow {
+    margin:2px 0px 0px 0px;
+    width:100%;
+    height:14px;
+    display:block;
+    cursor:pointer;
+    background-position:center center;
+    background-repeat:no-repeat;
+    width:15px;
+    margin-left:auto;
+    margin-right:auto;
+}
+.arrow.upmod {
+    background-image:url(images/sprite.png?v=1);
+    background-position:-4px -227px;
+}
+.arrow.downmod {
+    background-image:url(images/sprite.png?v=1);
+    background-position:-4px -249px;
+}
+.arrow.up {
+    background-image:url(images/sprite.png?v=1);
+    background-position:-4px -271px;
+}
+.arrow.down {
+    background-image:url(images/sprite.png?v=1);
+    background-position:-4px -293px;
+}
+
+.btn-reddit {
+    background-color: #4f86b5;
+    border-bottom: 2px solid #4270a2;
+    color: #ffffff;
+    display: inline-block;
+    margin-bottom: 0;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: bold;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 4px 12px 3px;
+    font-size: 12px;
+    line-height: 20px;
+    border-radius: 3px;
+}

@@ -62,8 +62,7 @@ function makeDisplay(redditPosts, encodedUrl, title) {
     $("#data").append("<span id='title'>"+title+"</span>&nbsp;&nbsp;&nbsp;");
     
     $("#data").append("<span><a title='Post to reddit'"+
-        " target='_blank' href='" + resubmitUrl + 
-        "'>Repost</a></span>");
+        " href='post.html'>Repost</a></span>");
     
     $.each(permalinks, function(index, permalink) {
 		url = "https://www.reddit.com" + permalink.link
