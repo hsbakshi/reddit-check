@@ -24,12 +24,14 @@ function parsePosts(globalPage, tab) {
 }
 
 function processPosts(redditPosts, encodedUrl, title) {
-    var submitUrl = "https://www.reddit.com/submit?url=" + encodedUrl
     if (redditPosts.length === 0) {
-        chrome.tabs.create({
-                url: submitUrl
-        });
-        window.close();
+        $("#data").append("<span id='title'>"+cropTitle(title)+"</span>&nbsp;&nbsp;&nbsp;");
+
+        $("#data").append("<span><a title='Post to reddit'"+
+            " href='post.html'>Post</a></span>");
+
+        $("#links").append("<span>No posts found for this page. Click the button to make one!</span>")
+        return;
     }
     makeDisplay(redditPosts, encodedUrl, title)
 }
@@ -56,9 +58,7 @@ function makeDisplay(redditPosts, encodedUrl, title) {
     }
 
     // showPosts:
-    var maxTitleLength = 30;
-    if (title.length > maxTitleLength)
-        title = title.substring (0, maxTitleLength) + "...";
+    title = cropTitle(title);
     $("#data").append("<span id='title'>"+title+"</span>&nbsp;&nbsp;&nbsp;");
     
     $("#data").append("<span><a title='Post to reddit'"+
@@ -87,6 +87,13 @@ function comparePosts(postA, postB) {
 function getAge (days) {
     var age = days.toFixed(1) + " days ago";
     return age;
+}
+
+function cropTitle(title) {
+    var maxTitleLength = 30;
+    if (title.length > maxTitleLength)
+        title = title.substring (0, maxTitleLength) + "...";
+    return title;
 }
        
 document.addEventListener('DOMContentLoaded',function () {
