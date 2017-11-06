@@ -144,7 +144,7 @@ function setBadge(title, text, badgeColor, alienIcon, tab) {
     })
 }
 
-function getSnoowrap(interactive, callback) {
+function backgroundSnoowrap() {
     'use strict';
     var clientId = 'JM8JSElud0Rm1g';
     var redirectUri = chrome.identity.getRedirectURL('provider_cb');
@@ -152,56 +152,107 @@ function getSnoowrap(interactive, callback) {
     // TODO: bogus userAgent
     var userAgent = chrome.runtime.id + ':' + 'v0.0.1' + ' (by /u/sirius_li)'
 
-    var snoowrap_requester = lscache.get('snoowrap_requester_json');
-    // In case we already have a snoowrap requester cached, simply return it.
-    if (snoowrap_requester) {
-        callback(snoowrap_requester);
-        return;
-    }
+    var snoowrap_requester_json = lscache.get('snoowrap_requester_json');
+    var snoowrap_requester = setSnoowrapFromJson(snoowrap_requester_json);
 
-    var authenticationUrl = snoowrap.getAuthUrl({
-        clientId: clientId,
-        scope: ['identity', 'read', 'submit'],
-        redirectUri: redirectUri,
-        permanent: true,
-        state: 'fe211bebc52eb3da9bef8db6e63104d3' // TODO: bogus state
-    });
-
-    var options = {
-        'interactive': interactive,
-        'url': authenticationUrl
-    }
-    chrome.identity.launchWebAuthFlow(options, function(redirectUri) {
-        if (chrome.runtime.lastError) {
-            new Error(chrome.runtime.lastError);
-        }
-
-        var matches = redirectUri.match(redirectRe);
-        if (matches && matches.length > 1) {
-            var code = new URL(redirectUri).searchParams.get('code');
-            setSnoowrap(code);
+    function setSnoowrapFromJson(snoo_json) {
+        if (snoo_json) {
+            return new snoowrap({
+                userAgent: snoo_json.userAgent,
+                clientId: snoo_json.clientId,
+                clientSecret: '',
+                refreshToken: snoo_json.refreshToken
+            });
         } else {
-            new Error('Invalid redirect URI');
+            return null;
         }
-    });
+    }
 
-    function setSnoowrap(auth_code) {
-        var snoowrap_promise = snoowrap.fromAuthCode({
-            code: auth_code,
-            userAgent: userAgent,
-            clientId: clientId,
-            redirectUri: redirectUri
-        });
-        snoowrap_promise.then(r => {
-            lscache.set('snoowrap_requester_json', r);
-            callback(JSON.stringify(r));
-        });
+    return {
+        // TODO: anonymous login
+
+        logInReddit: function(interactive, callback) {
+            // In case we already have a snoowrap requester cached, simply return it.
+            if (lscache.get('snoowrap_requester_json')) {
+                callback('Success');
+                return;
+            }
+
+            var authenticationUrl = snoowrap.getAuthUrl({
+                clientId: clientId,
+                scope: ['identity', 'read', 'submit'],
+                redirectUri: redirectUri,
+                permanent: true,
+                state: 'fe211bebc52eb3da9bef8db6e63104d3' // TODO: bogus state
+            });
+
+            var options = {
+                'interactive': interactive,
+                'url': authenticationUrl
+            }
+            chrome.identity.launchWebAuthFlow(options, function(redirectUri) {
+                if (chrome.runtime.lastError) {
+                    new Error(chrome.runtime.lastError);
+                }
+
+                var matches = redirectUri.match(redirectRe);
+                if (matches && matches.length > 1) {
+                    var code = new URL(redirectUri).searchParams.get('code');
+                    setSnoowrapFromAuthCode(code);
+                } else {
+                    new Error('Invalid redirect URI');
+                }
+            });
+
+            function setSnoowrapFromAuthCode(auth_code) {
+                var snoowrap_promise = snoowrap.fromAuthCode({
+                    code: auth_code,
+                    userAgent: userAgent,
+                    clientId: clientId,
+                    redirectUri: redirectUri
+                });
+                snoowrap_promise.then(r => {
+                    lscache.set('snoowrap_requester_json', r);
+                    snoowrap_requester_json = JSON.stringify(r);
+                    snoowrap_requester = r;
+                    callback('Success');
+                });
+            }
+        },
+
+        submitPost: function(subreddit, title, url, callback) {
+            snoowrap_requester.submitLink({
+                subredditName: subreddit,
+                title: title,
+                url: url
+            })
+            .then(function(submission) {
+                callback('Success');
+            })
+            .catch(function(err) {
+                callback(err);
+            });
+        },
+
+        getCurrentUserName: function(callback) {
+            snoowrap_requester.getMe()
+            .then(u => callback(u.name));
+        }
     }
 }
 
+var snoo = backgroundSnoowrap();
+
 function onRequest(request, sender, callback) {
-    if (request.action == 'getSnoowrap') {
-        getSnoowrap(request.interactive, callback);
+    console.log(request);
+    if (request.action == 'logInReddit') {
+        snoo.logInReddit(request.interactive, callback);
+        return true;
+    } else if (request.action == 'submitPost') {
+        snoo.submitPost(request.subreddit, request.title, request.url, callback);
+        return true;
+    } else if (request.action == 'getCurrentUserName') {
+        snoo.getCurrentUserName(callback);
         return true;
     }
 }

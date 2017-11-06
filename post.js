@@ -1,73 +1,58 @@
-function interactSnoowrap() {
-    var snoo_json;
-    var snoowrap_requester;
-    var reddit_user;
+function getCurrentUserName(callback) {
+    chrome.runtime.sendMessage({
+        'action' : 'getCurrentUserName'
+    }, callback)
+}
 
-    function setSnoowrap(snoo_json) {
-        snoowrap_requester = new snoowrap({
-            userAgent: snoo_json.userAgent,
-            clientId: snoo_json.clientId,
-            clientSecret: '',
-            refreshToken: snoo_json.refreshToken
-        });
-        snoowrap_requester.getMe().then(u => {
-            reddit_user = u;
-            console.log(u);
-        });
-        return;
-    }
-
-    function submitPost() {
-        snoowrap_requester.submitLink({
-            subredditName: getSubreddit(),
-            title: $("#comment").val(),
-            url: $("#newpostURL").val()
-        })
-        .then(function(submission) {
-            $("#form").hide(0);
-            $("#status").append("<span>Successful post</span>")
-        })
-        .catch(function(err) {
-            $("#form").hide(0);
-            $("#back").attr("href", "post.html")
-            $("#status").append("<span>" + err + "</span>");
+function submitPost(callback) {
+    var request = {
+        'action' : 'submitPost',
+        'subreddit': $("#subreddit").val(),
+        'title': $("#comment").val(),
+        'url': $("#newpostURL").val()
+    };
+    if (request.subreddit) {
+        chrome.runtime.sendMessage(request, callback);
+    } else {
+        // Post to User's profile
+        getCurrentUserName(function(user_name) {
+            request.subreddit = 'u_' + user_name;
+            chrome.runtime.sendMessage(request, callback);
         });
     }
+}
 
-    function showSubmitForm() {
-        $("#login").hide(0);
-        $("#form").show(0);
-        $("#submitPost").click(submitPost);
-    }
-
-    function getSubreddit() {
-        // Default behavior is to post to user profile
-        var subreddit = $("#subreddit").val();
-        if (subreddit) {
-            return subreddit;
-        } else {
-            return 'u_' + reddit_user.name;
-        }
-    }
-
-    return {
-        isLoggedIn: function (callback) {
-            snoo_json = lscache.get('snoowrap_requester_json');
-            if (snoo_json) {
-                setSnoowrap(snoo_json);
-                showSubmitForm();
+function showSubmitForm() {
+    $("#login").hide(0);
+    $("#form").show(0);
+    $("#submitPost").click(function() {
+        submitPost(function (status) {
+            if (status == 'Success') {
+                $("#form").hide(0);
+                $("#status").append("<span>Successful post</span>")
             } else {
-                callback();
+                $("#form").hide(0);
+                $("#back").attr("href", "post.html")
+                $("#status").append("<span>" + status + "</span>");
             }
-        },
+        });
+    });
+}
 
-        getSnoowrap: function (callback) {
-            chrome.runtime.sendMessage({
-                'action' : 'getSnoowrap',
-                'interactive' : true
-            }, callback)
-        }
+function isLoggedIn(callback) {
+    snoo_json = lscache.get('snoowrap_requester_json');
+    if (snoo_json) {
+        showSubmitForm();
+    } else {
+        callback();
     }
+}
+
+function logInReddit(callback) {
+    chrome.runtime.sendMessage({
+        'action' : 'logInReddit',
+        'interactive' : true
+    }, callback)
 }
 
 function setSubmitFormValues() {
@@ -86,19 +71,17 @@ function setSubmitFormValues() {
 }
 
 $(document).ready(function(){
-    var snoo = interactSnoowrap();
-
     $("#close").click(function() {
       window.close();
     });
 
-    snoo.isLoggedIn(
+    isLoggedIn(
         function() {
             $("#form").hide(0);
             $("#login button").click(function() {
-                snoo.getSnoowrap(function(snoo_json) {
-                    console.log(snoo_json);
-                    snoo.isLoggedIn(function() {
+                logInReddit(function(status) {
+                    console.log('Login status: ' + status);
+                    isLoggedIn(function() {
                         $("#status").append("<span>Problem logging in. Try again.</span>");
                     })
                 });
