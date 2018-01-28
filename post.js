@@ -4,6 +4,10 @@ function getCurrentUserName(callback) {
     }, callback)
 }
 
+function validateForm() {
+    
+}
+
 function submitPost(callback) {
     var request = {
         'action' : 'submitPost',
@@ -64,6 +68,7 @@ function setSubmitFormValues() {
             var url = tab.url;
             console.assert(typeof url == 'string', 'tab.url should be a string');
             $("#newpostURL").attr("value", url);
+            Materialize.updateTextFields()
             // var title = tab.title;
             // $("#comment").attr("value", title);
         }
@@ -74,6 +79,9 @@ $(document).ready(function(){
     $("#close").click(function() {
       window.close();
     });
+    // Get Materialize dropdown menus to show up
+    // https://stackoverflow.com/a/28258167
+    $('select').material_select();
 
     isLoggedIn(
         function() {

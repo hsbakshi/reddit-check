@@ -1,41 +1,55 @@
 <!doctype html>
 <html>
 <head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
 <link rel="stylesheet" type="text/css" href="style.css">
 <script src="jquery.min.js" language="javascript"></script>
 <script src="lscache.min.js"></script>
 <script src="snoowrap-v1.min.js"></script>
+<script src="materialize/js/materialize.js"></script>
 <script src="post.js"></script>
 </head>
 <body>
-    <div id="data">
-        <div id='back'>
-            <a href="popup.html">Back</a>
+    <div class="container">
+        <div class="row">
+            <div id="data">
+                <div id='back' class="col s1">
+                    <a href="popup.html">Back</a>
+                </div>
+                <span id='title' class="col s7">
+                    Submit Post to Reddit
+                </span>
+                <div class="col s4">
+                        <a class="waves-effect waves-light btn">POST</a>
+                </div>
+            </div>
         </div>
-        <div id='close'>
-            <a href="#"><img src="images/close.png"/> </a>
+        <div class="divider"></div>
+        <div id="form" class="below-title">
+            <div class="input-field">
+                <select class="icons">
+                    <option value="" selected data-icon="images/alien64.png" class="left circle">My Profile (default)</option>
+                    <option value="" data-icon="images/alien64.png" class="left circle">subreddit 1</option>
+                    <option value="" data-icon="images/alien64.png" class="left circle">subreddit 2</option>
+                </select>
+                <label>Select a Subreddit</label>
+            </div>
+            <div class="input-field">
+                <textarea id="comment" name="comment" class="materialize-textarea validate" required="" aria-required="true"></textarea>
+                <label for="comment" class="active" data-error="Please provide a comment">Enter your comment</label>
+            </div>
+            <div class="input-field">
+                <input type="url" id="newpostURL" name="titleURL" class="validate">
+                <label for="newpostURL" data-error="Please provide a valid URL">URL</label>
+            </div>
         </div>
-        <span id='title'>
-            Submit Post to Reddit
-        </span>
-    </div>
-    <div id="form" class="below-title">
-        URL:<br>
-        <input type="text" id="newpostURL" name="titleURL"><br>
-        Comment:<br>
-        <textarea id="comment" name="comment" cols="40" rows="5"></textarea><br>
-        Subreddit (optional):<br>
-        <input type="text" id="subreddit" name="subreddit"><br>
-        <button id="submitPost">Submit</button>
-    </div>
-    <div id="status" class="below-title">
-    </div>
-    <div id="login" class="below-title">
-        You are not currently logged in to Reddit.<br>
-        <button class="btn-reddit">sign up</button>
-        or
-        <button class="btn-reddit">log in</button>
-        to make a post.
+        <div id="login" class="below-title">
+            You are not currently logged in to Reddit.<br>
+            <button class="btn-reddit">sign up</button>
+            or
+            <button class="btn-reddit">log in</button>
+            to make a post.
+        </div>
     </div>
 </body>
 </html>
