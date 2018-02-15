@@ -20,7 +20,7 @@
                     Submit Post to Reddit
                 </span>
                 <div class="col s4">
-                        <a id="submitPost" class="waves-effect waves-light btn">POST</a>
+                        <button id="submitPost" class="waves-effect waves-light btn">POST</button>
                 </div>
             </div>
         </div>
@@ -34,9 +34,11 @@
                 </select>
                 <label>Select a Subreddit</label>
             </div>
-            <div class="input-field">
-                <textarea id="comment" name="comment" class="materialize-textarea validate" required="" aria-required="true"></textarea>
-                <label for="comment" class="active" data-error="Please provide a comment">Enter your comment</label>
+            <div class="section">
+                <div class="input-field">
+                    <textarea id="comment" name="comment" class="materialize-textarea validate" required="" aria-required="true"></textarea>
+                    <label for="comment" class="active" data-error="Please provide a comment">Enter your comment</label>
+                </div>
             </div>
             <div class="input-field">
                 <input type="url" id="newpostURL" name="titleURL" class="validate">
