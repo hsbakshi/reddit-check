@@ -13,37 +13,39 @@
     <div class="container">
         <div class="row">
             <div id="data">
-                <div id='back' class="col s1">
+                <div id='back' class="col s2">
                     <a href="popup.html">Back</a>
                 </div>
-                <span id='title' class="col s7">
+                <span id='title' class="col s10">
                     Submit Post to Reddit
                 </span>
-                <div class="col s4">
-                        <button id="submitPost" class="waves-effect waves-light btn">POST</button>
-                </div>
             </div>
         </div>
         <div class="divider"></div>
         <div id="form" class="row">
-            <div class="input-field">
-                <select class="icons">
-                    <option value="" selected data-icon="images/alien64.png" class="left circle">My Profile (default)</option>
-                    <option value="" data-icon="images/alien64.png" class="left circle">subreddit 1</option>
-                    <option value="" data-icon="images/alien64.png" class="left circle">subreddit 2</option>
-                </select>
-                <label>Select a Subreddit</label>
-            </div>
-            <div class="section">
+            <form>
                 <div class="input-field">
-                    <textarea id="comment" name="comment" class="materialize-textarea validate" required="" aria-required="true"></textarea>
-                    <label for="comment" class="active" data-error="Please provide a comment">Enter your comment</label>
+                    <select class="icons">
+                        <option value="" selected data-icon="images/alien64.png" class="left circle">My Profile (default)</option>
+                        <option value="" data-icon="images/alien64.png" class="left circle">subreddit 1</option>
+                        <option value="" data-icon="images/alien64.png" class="left circle">subreddit 2</option>
+                    </select>
+                    <label>Select a Subreddit</label>
                 </div>
-            </div>
-            <div class="input-field">
-                <input type="url" id="newpostURL" name="titleURL" class="validate">
-                <label for="newpostURL" data-error="Please provide a valid URL">URL</label>
-            </div>
+                <div class="section">
+                    <div class="input-field">
+                        <textarea id="comment" name="comment" class="materialize-textarea validate" required="" aria-required="true"></textarea>
+                        <label for="comment" class="active" data-error="Please provide a comment">Enter your comment</label>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="input-field">
+                        <input type="url" id="newpostURL" name="titleURL" class="validate" required="" aria-required="true">
+                        <label for="newpostURL" data-error="Please provide a valid URL">URL</label>
+                    </div>
+                </div>
+                <button class="btn waves-effect waves-light" type="submit">Submit</button>
+            </form>
         </div>
         <div id="login" class="row">
             You are not currently logged in to Reddit.<br>

@@ -29,7 +29,8 @@ function submitPost(callback) {
 function showSubmitForm() {
     $("#login").hide(0);
     $("#form").show(0);
-    $("#submitPost").click(function() {
+    $("form").submit(function(event) {
+        event.preventDefault();
         submitPost(function (status) {
             if (status == 'Success') {
                 $("#form").hide(0);
