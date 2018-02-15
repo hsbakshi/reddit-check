@@ -20,12 +20,12 @@
                     Submit Post to Reddit
                 </span>
                 <div class="col s4">
-                        <a class="waves-effect waves-light btn">POST</a>
+                        <a id="submitPost" class="waves-effect waves-light btn">POST</a>
                 </div>
             </div>
         </div>
         <div class="divider"></div>
-        <div id="form" class="below-title">
+        <div id="form" class="row">
             <div class="input-field">
                 <select class="icons">
                     <option value="" selected data-icon="images/alien64.png" class="left circle">My Profile (default)</option>
@@ -43,13 +43,14 @@
                 <label for="newpostURL" data-error="Please provide a valid URL">URL</label>
             </div>
         </div>
-        <div id="login" class="below-title">
+        <div id="login" class="row">
             You are not currently logged in to Reddit.<br>
             <button class="btn-reddit">sign up</button>
             or
             <button class="btn-reddit">log in</button>
             to make a post.
         </div>
+        <div id="status" class="row"></div>
     </div>
 </body>
 </html>
