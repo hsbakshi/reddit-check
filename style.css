@@ -153,3 +153,10 @@ https://stackoverflow.com/a/13362292
     position: absolute;
     left:-999em;
 }
+
+/*
+Fix autocomplete dropdown showing up below submit button
+*/
+.ui-autocomplete {
+    z-index: 999;
+}

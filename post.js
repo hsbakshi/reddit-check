@@ -11,14 +11,16 @@ function submitPost(callback) {
         'title': $("#comment").val(),
         'url': $("#newpostURL").val()
     };
-    if (request.subreddit) {
+    if (request.subreddit && request.subreddit.startsWith('/r/')) {
         chrome.runtime.sendMessage(request, callback);
-    } else {
+    } else if (request.subreddit == "") {
         // Post to User's profile
         getCurrentUserName(function(user_name) {
             request.subreddit = 'u_' + user_name;
             chrome.runtime.sendMessage(request, callback);
         });
+    } else {
+        $("#subreddit").addClass("invalid");
     }
 }
 
