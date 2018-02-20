@@ -7,6 +7,8 @@
 <script src="lscache.min.js"></script>
 <script src="snoowrap-v1.min.js"></script>
 <script src="materialize/js/materialize.js"></script>
+<!-- JQuery UI has autocomplete function that conflicts with Materialize -->
+<script src="jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
 <script src="post.js"></script>
 </head>
 <body>
@@ -25,12 +27,8 @@
         <div id="form" class="row">
             <form>
                 <div class="input-field">
-                    <select class="icons">
-                        <option value="" selected data-icon="images/alien64.png" class="left circle">My Profile (default)</option>
-                        <option value="" data-icon="images/alien64.png" class="left circle">subreddit 1</option>
-                        <option value="" data-icon="images/alien64.png" class="left circle">subreddit 2</option>
-                    </select>
-                    <label>Select a Subreddit</label>
+                    <input id="subreddit" placeholder="My Profile (default)" type="text">
+                    <label>Subreddit</label>
                 </div>
                 <div class="section">
                     <div class="input-field">

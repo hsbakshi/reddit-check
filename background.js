@@ -237,6 +237,12 @@ function backgroundSnoowrap() {
         getCurrentUserName: function(callback) {
             snoowrap_requester.getMe()
             .then(u => callback(u.name));
+        },
+
+        searchSubreddits: function(query, callback) {
+            snoowrap_requester.searchSubreddits({
+                'query': query
+            }).then(subreddits => callback(subreddits));
         }
     }
 }
@@ -253,6 +259,9 @@ function onRequest(request, sender, callback) {
         return true;
     } else if (request.action == 'getCurrentUserName') {
         snoo.getCurrentUserName(callback);
+        return true;
+    } else if (request.action == 'searchSubreddits') {
+        snoo.searchSubreddits(request.query, callback);
         return true;
     }
 }

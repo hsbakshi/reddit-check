@@ -144,3 +144,12 @@ li a {
     line-height: 20px;
     border-radius: 3px;
 }
+
+/*
+Hide helper text from JQuery UI autocomplete
+https://stackoverflow.com/a/13362292
+*/
+.ui-helper-hidden-accessible {
+    position: absolute;
+    left:-999em;
+}

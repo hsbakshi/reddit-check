@@ -4,10 +4,6 @@ function getCurrentUserName(callback) {
     }, callback)
 }
 
-function validateForm() {
-    
-}
-
 function submitPost(callback) {
     var request = {
         'action' : 'submitPost',
@@ -60,6 +56,19 @@ function logInReddit(callback) {
     }, callback)
 }
 
+function searchSubreddits(request, response) {
+    chrome.runtime.sendMessage({
+        'action': 'searchSubreddits',
+        'query': request.term
+    }, function(subreddits) {
+        var subreddit_urls = [];
+        $.each(subreddits, function(i, item) {
+            subreddit_urls.push(item.url);
+        });
+        response(subreddit_urls);
+    });
+}
+
 function setSubmitFormValues() {
     chrome.tabs.query({
             active: true,
@@ -76,13 +85,17 @@ function setSubmitFormValues() {
     );
 }
 
+function autocompleteSubreddit() {
+    $("#subreddit").autocomplete({
+        source: searchSubreddits,
+        minLength: 3
+    });
+}
+
 $(document).ready(function(){
     $("#close").click(function() {
       window.close();
     });
-    // Get Materialize dropdown menus to show up
-    // https://stackoverflow.com/a/28258167
-    $('select').material_select();
 
     isLoggedIn(
         function() {
@@ -99,4 +112,5 @@ $(document).ready(function(){
     );
 
     setSubmitFormValues();
+    autocompleteSubreddit();
 });
