@@ -37,6 +37,8 @@ function showSubmitForm() {
                 $("#form").hide(0);
                 $("#back").attr("href", "post.html")
                 $("#status").append("<span>" + status + "</span>");
+                console.log('Status of failed post:');
+                console.log(status);
             }
         });
     });

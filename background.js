@@ -230,7 +230,7 @@ function backgroundSnoowrap() {
                 callback('Success');
             })
             .catch(function(err) {
-                callback(err);
+                callback(err.toString());
             });
         },
 
