@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="jquery.min.js" language="javascript"></script>
+<script src="lscache.min.js"></script>
+<script src="snoowrap-v1.min.js"></script>
+<script src="materialize/js/materialize.js"></script>
+<!-- JQuery UI has autocomplete function that conflicts with Materialize -->
+<script src="jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+<script src="post.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div id="data">
+                <div id='back' class="col s2">
+                    <a href="popup.html">Back</a>
+                </div>
+                <span id='title' class="col s10">
+                    Submit Post to Reddit
+                </span>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div id="form" class="row">
+            <form>
+                <div class="input-field">
+                    <input id="subreddit" placeholder="My Profile (default)" class="validate" type="text">
+                    <label for="subreddit" data-error="Please provide a valid subreddit">Subreddit</label>
+                </div>
+                <div class="section">
+                    <div class="input-field">
+                        <textarea id="comment" name="comment" class="materialize-textarea validate" required="" aria-required="true"></textarea>
+                        <label for="comment" class="active" data-error="Please provide a comment">Enter your comment</label>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="input-field">
+                        <input type="url" id="newpostURL" name="titleURL" class="validate" required="" aria-required="true">
+                        <label for="newpostURL" data-error="Please provide a valid URL">URL</label>
+                    </div>
+                </div>
+                <button class="btn waves-effect waves-light" type="submit">Submit</button>
+            </form>
+        </div>
+        <div id="login" class="row">
+            You are not currently logged in to Reddit.<br>
+            <button class="btn-reddit">sign up</button>
+            or
+            <button class="btn-reddit">log in</button>
+            to make a post.
+        </div>
+        <div id="status" class="row"></div>
+    </div>
+</body>
+</html>
